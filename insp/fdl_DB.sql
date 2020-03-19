@@ -293,6 +293,7 @@ create table fdl.t_proj (
 create table fdl.t_inspprocass(
     hold_insp  tinyint default 0 , -- 1 = Hold of inspection 
     confirmed tinyint default 0 , -- 1 = confirmed , 0=not confirmed
+    user_ins varchar(225) , -- the department manger name how inserted
     procdate date not null,
     insp_type char(1), --   p = personal , s = subcontract 
     is_boss char(1),
@@ -310,38 +311,38 @@ create table fdl.t_inspprocass(
     remarks varchar(225),
     approved varchar(2) default '00', -- '10' approve by thechnical manager , '11' approve by general manager
     -- ARRIVAL OF INSPECTOR
-    arrive_date date, -- arriveing date 
-    startdate date, -- after arriveing starting date
+ --   arrive_date date, -- arriveing date 
+ --   startdate date, -- after arriveing starting date
     -- MEETING OF AGENDA 
-    meeting varchar(9) default '000000000' , -- Y,N Meeting Agenda
-    program_dates longtext, -- The program of inspection agreed 
+  --  meeting varchar(9) default '000000000' , -- Y,N Meeting Agenda
+  --  program_dates longtext, -- The program of inspection agreed 
     -- DECLARATION OF RESPONABILITY AND INSPECTION FEES
-    declared varchar(225), -- on behalf declaration
+  --  declared varchar(225), -- on behalf declaration
     -- LETTER OF PERMISSION
-    m_v varchar(100), -- The master of M/V 
-    bert_port varchar(100), -- Berthing Port
-    lett_date date, -- Date
+  --  m_v varchar(100), -- The master of M/V 
+  --  bert_port varchar(100), -- Berthing Port
+  --  lett_date date, -- Date
     -- Certificate of fitness 
-    cert_no varchar(20), -- certification number
-    vessel_owner varchar(100), -- vessel owner
-    call_sign varchar(100), -- names use by the vessel internally
-    flag varchar(100), -- the vessel flag 
-    loading_port varchar(100), -- Loading port
-    imo_no varchar(10), -- vessel number
+   -- cert_no varchar(20), -- certification number
+   -- vessel_owner varchar(100), -- vessel owner
+   -- call_sign varchar(100), -- names use by the vessel internally
+   -- flag varchar(100), -- the vessel flag 
+   -- loading_port varchar(100), -- Loading port
+   -- imo_no varchar(10), -- vessel number
     -- CONTAINER’S INSPECTION REPORT
-    cont_no tinyint, -- Nº of containers inspected
-    cont_type varchar(50),-- Type of containers: - 20ft / 40ft / Reefer cont. / Open top …etc
-    cont_rej tinyint,-- Nº of container rejected
-    rej_reas varchar(225),-- Reasons
-    cont_action varchar(225),-- Action Taken
-    cont_status varchar(6) default '000000', -- Containers Status	Door	Locks	Ceiling	Walls	Floors	Ventilators
+   -- cont_no tinyint, -- Nº of containers inspected
+   -- cont_type varchar(50),-- Type of containers: - 20ft / 40ft / Reefer cont. / Open top …etc
+   -- cont_rej tinyint,-- Nº of container rejected
+   -- rej_reas varchar(225),-- Reasons
+   -- cont_action varchar(225),-- Action Taken
+   -- cont_status varchar(6) default '000000', -- Containers Status	Door	Locks	Ceiling	Walls	Floors	Ventilators
     -- FINAL INSPECTION REPORT
     -- 1-VISUAL INSPECTION
-    ssc varchar(225), -- Supplier’s storing conditions
-    ma varchar(225), -- Material appearance
-    pq varchar(225),-- Packaging quality
-    cc varchar(225),-- Containers condition
-    sample_standard varchar(225),-- Sample taken according the standards
+   -- ssc varchar(225), -- Supplier’s storing conditions
+   -- ma varchar(225), -- Material appearance
+   -- pq varchar(225),-- Packaging quality
+   -- cc varchar(225),-- Containers condition
+   -- sample_standard varchar(225),-- Sample taken according the standards
     primary key (projid,inspid),
     foreign key (inspid) references t_insp(inspid) on update cascade on delete cascade,
     foreign key (projid) references t_proj(projid) on update cascade on delete cascade
@@ -618,16 +619,10 @@ create table fdl.s_users_dep (
 create table fdl.s_steps
     (
         id int not null auto_increment primary key,
+        act varchar(50),
         txt varchar(100),
         txt1 varchar(100),
-        act varchar(10) not null,
-        roles int,
-        adm  varchar(5) default '00', 
-        gm  varchar(5) default '00', 
-        tec  varchar(5) default '00', 
-        dep  varchar(5) default '00', 
-        insp  varchar(5) default '00', 
-        acc  varchar(5) default '00' 
+        grp tinyint
     );
 
 --  [----------  End Secuirty Area-----]
@@ -665,7 +660,21 @@ create view v_login AS
         (
             SELECT m.mprjid,m.custid ,m.code as mproj_code,m.depid,m.projname as mproj_name,m.lcreditno,m.subjpurchorderno,m.ms,m.totalaccred,m.qyagrosswt,m.qyanetwt,
             p.steps,p.approv_hold ,p.projid ,p.code as proj_cod ,p.projname ,p.shipmentno ,p.shipmentvalue ,p.currency ,p.supid ,p.commodity ,p.vesselsname ,p.cntryid ,p.town ,p.origin_goods ,p.place_insp ,p.insp_date ,p.portdispach ,p.portdischarge ,p.loadfromdate ,p.loadtodate ,p.qyagrosswt as p_qyagrosswt ,p.qyanetwt as p_qyanetwt, p.totalaccred as p_totalaccred, p.mprojid ,p.bill_loading_no ,p.bill_loading_date ,p.invoice_no ,p.invoice_date ,p.total_packing ,p.l_c_nr ,p.pro_inv_no ,p.pro_inv_date ,p.isactive as proj_is_active ,p.conclusion  ,p.is_assign_insp ,p.is_insp_ticket ,p.fee ,p.is_send_frep ,p.issuing_approv, 
-            ss.hold_insp, ss.confirmed, ss.procdate, ss.insp_type as subcont_or_person , ss.is_boss, ss.whysub, ss.condation, ss.implimint, ss.timeing, ss.cooperation, ss.overall, ss.perioddays, ss.localprice, ss.externelprice, ss.remarks, ss.Approved, ss.arrive_date, ss.startdate, ss.meeting, ss.program_dates, ss.declared, ss.m_v, ss.bert_port, ss.lett_date, ss.cert_no, ss.vessel_owner, ss.call_sign, ss.flag, ss.loading_port, ss.imo_no, ss.cont_no, ss.cont_type, ss.cont_rej, ss.rej_reas, ss.cont_action, ss.cont_status, ss.ssc, ss.ma, ss.pq, ss.cc, ss.sample_standard,
+            ss.hold_insp, 
+            ss.confirmed, 
+            ss.procdate, 
+            ss.insp_type as subcont_or_person , 
+            ss.is_boss, 
+            ss.whysub, 
+            ss.condation, 
+            ss.implimint, 
+            ss.timeing, 
+            ss.cooperation, 
+            ss.overall, 
+            ss.perioddays, 
+            ss.localprice, 
+            ss.externelprice, 
+            ss.remarks,
             i.inspid, i.insp_type, i.first_name, i.mid_name, i.last_name, i.passport, i.idcard, i.country, i.depid as insp_dep, i.qualiid, i.fld_exp, i.insp_exp, i.contid, i.mobile, i.email, i.fax, i.phone, i.donor, i.graddate, i.crdate, i.isactive as insp_is_active, i.inspphoto, i.loginname, i.loginpassword, i.issuing_certi 
             from fdl.t_mproj m
             left join fdl.t_proj p
@@ -854,7 +863,7 @@ create table  fdl_proj.t_projdoc
 
 use fdl_dlrs;
 --   cust doc 
-create table t_custdocs (
+create table fdl_proj.t_custdocs (
         id int auto_increment not null primary key,
         custid int not null,
         docname varchar(225),
@@ -863,7 +872,7 @@ create table t_custdocs (
     );
 
 --   supplier doc 
-create table t_supdocs (
+create table fdl_proj.t_supdocs (
         id int auto_increment not null primary key,
         supid int not null,
         docname varchar(225),
