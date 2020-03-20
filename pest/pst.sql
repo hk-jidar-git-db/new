@@ -109,7 +109,7 @@ create table pst.t_pay
     day varchar(30) default '00000000000000000000000000000',
     foreign key (cust) references pst.t_cust(id) on update cascade 
 );
-
+ 
 create table pst.t_cash
 (
     cust int not null,

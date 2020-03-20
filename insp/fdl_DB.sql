@@ -309,10 +309,10 @@ create table fdl.t_inspprocass(
     localprice decimal(10,3), -- local price
     externelprice decimal(10,3), -- external price
     remarks varchar(225),
-    approved varchar(2) default '00', -- '10' approve by thechnical manager , '11' approve by general manager
+    approved varchar(2) default '00' not null, -- '10' approve by thechnical manager , '11' approve by general manager
     -- ARRIVAL OF INSPECTOR
- --   arrive_date date, -- arriveing date 
- --   startdate date, -- after arriveing starting date
+    arrive_date date, -- arriveing date 
+    startdate date, -- after arriveing starting date
     -- MEETING OF AGENDA 
   --  meeting varchar(9) default '000000000' , -- Y,N Meeting Agenda
   --  program_dates longtext, -- The program of inspection agreed 
@@ -611,8 +611,8 @@ create table fdl.s_users_dep (
         `login` VARCHAR(255) NOT NULL,
         depid varchar(2) NOT NULL,
         PRIMARY KEY (login, depid),
-        foreign key (`login`) references s_users (`login`) on delete cascade,
-        foreign key (depid) references fdl.h_dep (depid) on delete cascade
+         foreign key (`login`) references s_users (`login`) on delete cascade,
+         foreign key (depid) references fdl.h_dep (depid) on delete cascade
     );
 
 
@@ -656,7 +656,7 @@ create view v_login AS
             loginpassword   AS pswd	        	 						
     FROM    fdl.t_insp ;
 
-    create view v_proj as
+create view v_proj as
         (
             SELECT m.mprjid,m.custid ,m.code as mproj_code,m.depid,m.projname as mproj_name,m.lcreditno,m.subjpurchorderno,m.ms,m.totalaccred,m.qyagrosswt,m.qyanetwt,
             p.steps,p.approv_hold ,p.projid ,p.code as proj_cod ,p.projname ,p.shipmentno ,p.shipmentvalue ,p.currency ,p.supid ,p.commodity ,p.vesselsname ,p.cntryid ,p.town ,p.origin_goods ,p.place_insp ,p.insp_date ,p.portdispach ,p.portdischarge ,p.loadfromdate ,p.loadtodate ,p.qyagrosswt as p_qyagrosswt ,p.qyanetwt as p_qyanetwt, p.totalaccred as p_totalaccred, p.mprojid ,p.bill_loading_no ,p.bill_loading_date ,p.invoice_no ,p.invoice_date ,p.total_packing ,p.l_c_nr ,p.pro_inv_no ,p.pro_inv_date ,p.isactive as proj_is_active ,p.conclusion  ,p.is_assign_insp ,p.is_insp_ticket ,p.fee ,p.is_send_frep ,p.issuing_approv, 
@@ -675,6 +675,7 @@ create view v_login AS
             ss.localprice, 
             ss.externelprice, 
             ss.remarks,
+            ss.approved,
             i.inspid, i.insp_type, i.first_name, i.mid_name, i.last_name, i.passport, i.idcard, i.country, i.depid as insp_dep, i.qualiid, i.fld_exp, i.insp_exp, i.contid, i.mobile, i.email, i.fax, i.phone, i.donor, i.graddate, i.crdate, i.isactive as insp_is_active, i.inspphoto, i.loginname, i.loginpassword, i.issuing_certi 
             from fdl.t_mproj m
             left join fdl.t_proj p
@@ -817,31 +818,10 @@ create trigger set_steps after update on fdl.t_inspprocass for each row
             update fdl.t_proj set steps = txt where projid = new.projid ;
         END IF;
     end;
-    
-create trigger set_dep_users_i after insert on fdl.s_users_dep for each row
-    begin
-    declare grp int;
-    select count(*) into grp from fdl.s_users_groups where `login` = new.`login` and group_id = 5 ;
-    IF grp = 0 THEN
-    insert into s_users_groups (`login`,group_id) values (new.`login` , 5);
-    END IF;
-    end;
-
-use fdl; 
- 
-create trigger set_dep_users_d after delete on fdl.s_users_dep for each row
-    begin
-    declare dep int;
-      select count(*) into dep from fdl.s_users_dep where `login` = old.`login` ;
-      IF dep = 0 && dep > 0 THEN
-        delete  from s_users_groups where `login` = old.`login` and group_id = 5 ;
-      END IF;
-    end;
-   
 --      end triggers
 
 --    [ Stored proceduers ] --
-
+ 
 
 -- [ End stored procedures]
 
