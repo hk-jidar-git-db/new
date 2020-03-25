@@ -64,7 +64,10 @@ create table fdl.t_company (
     cr varchar(225), --   commercial register 
     lic varchar(225), --   license number 
     wh varchar(225), --   working hours 
-    insu varchar(225) --   insurance number 
+    insu varchar(225), --   insurance number 
+    from_email varchar(225), -- from E mail
+    from_e_pwd varchar(225) -- from E mail
+    stamp longblob -- company stamp image
  );
 
 INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
@@ -579,7 +582,6 @@ create table fdl.s_apps_desc
 create table fdl.s_groups (
     group_id int(11) NOT NULL AUTO_INCREMENT,
     `description` varchar(255) DEFAULT NULL, 
-    email varchar(225),
     PRIMARY KEY (group_id) ,
     UNIQUE KEY description (description)
     );
@@ -606,7 +608,7 @@ create table fdl.s_groups_apps (
 -- modified secuerty system
 alter table fdl.s_users add userphoto longblob, add inspid int, add issuing_certi VARCHAR(1) default 'N', add control_certi varchar(1) default 'N' ;
 alter table fdl.s_apps add section tinyint ;
-alter table fdl.s_groups add  issuing_certi VARCHAR(1) default 'N', add control_certi varchar(1) default 'N' ;
+alter table fdl.s_groups add  issuing_certi VARCHAR(1) default 'N', add control_certi varchar(1) default 'N' , add signat longblob , add email varchar(225);
 create table fdl.s_users_dep (
         `login` VARCHAR(255) NOT NULL,
         depid varchar(2) NOT NULL,
@@ -658,25 +660,100 @@ create view v_login AS
 
 create view v_proj as
         (
-            SELECT m.mprjid,m.custid ,m.code as mproj_code,m.depid,m.projname as mproj_name,m.lcreditno,m.subjpurchorderno,m.ms,m.totalaccred,m.qyagrosswt,m.qyanetwt,
-            p.steps,p.approv_hold ,p.projid ,p.code as proj_cod ,p.projname ,p.shipmentno ,p.shipmentvalue ,p.currency ,p.supid ,p.commodity ,p.vesselsname ,p.cntryid ,p.town ,p.origin_goods ,p.place_insp ,p.insp_date ,p.portdispach ,p.portdischarge ,p.loadfromdate ,p.loadtodate ,p.qyagrosswt as p_qyagrosswt ,p.qyanetwt as p_qyanetwt, p.totalaccred as p_totalaccred, p.mprojid ,p.bill_loading_no ,p.bill_loading_date ,p.invoice_no ,p.invoice_date ,p.total_packing ,p.l_c_nr ,p.pro_inv_no ,p.pro_inv_date ,p.isactive as proj_is_active ,p.conclusion  ,p.is_assign_insp ,p.is_insp_ticket ,p.fee ,p.is_send_frep ,p.issuing_approv, 
+            SELECT 
+            m.mprjid,
+                m.custid ,
+                m.code as mproj_code,
+                m.depid,
+                m.projname as mproj_name,
+                m.lcreditno,
+                m.subjpurchorderno,
+                m.ms,
+                m.totalaccred,
+                m.qyagrosswt,
+                m.qyanetwt,
+            p.steps,
+                p.approv_hold ,
+                p.projid ,
+                p.code as proj_cod ,
+                p.projname ,
+                p.shipmentno ,
+                p.shipmentvalue ,
+                p.currency ,
+                p.supid ,
+                p.commodity ,
+                p.vesselsname ,
+                p.cntryid ,
+                p.town ,
+                p.origin_goods ,
+                p.place_insp ,
+                p.insp_date ,
+                p.portdispach ,
+                p.portdischarge ,
+                p.loadfromdate ,
+                p.loadtodate ,
+                p.qyagrosswt as p_qyagrosswt ,
+                p.qyanetwt as p_qyanetwt, 
+                p.totalaccred as p_totalaccred, 
+                p.mprojid ,
+                p.bill_loading_no ,
+                p.bill_loading_date ,
+                p.invoice_no ,
+                p.invoice_date ,
+                p.total_packing ,
+                p.l_c_nr ,
+                p.pro_inv_no ,
+                p.pro_inv_date ,
+                p.isactive as proj_is_active ,
+                p.conclusion  ,
+                p.is_assign_insp ,
+                p.is_insp_ticket ,
+                p.fee ,
+                p.is_send_frep ,
+                p.issuing_approv, 
             ss.hold_insp, 
-            ss.confirmed, 
-            ss.procdate, 
-            ss.insp_type as subcont_or_person , 
-            ss.is_boss, 
-            ss.whysub, 
-            ss.condation, 
-            ss.implimint, 
-            ss.timeing, 
-            ss.cooperation, 
-            ss.overall, 
-            ss.perioddays, 
-            ss.localprice, 
-            ss.externelprice, 
-            ss.remarks,
-            ss.approved,
-            i.inspid, i.insp_type, i.first_name, i.mid_name, i.last_name, i.passport, i.idcard, i.country, i.depid as insp_dep, i.qualiid, i.fld_exp, i.insp_exp, i.contid, i.mobile, i.email, i.fax, i.phone, i.donor, i.graddate, i.crdate, i.isactive as insp_is_active, i.inspphoto, i.loginname, i.loginpassword, i.issuing_certi 
+                ss.confirmed, 
+                ss.procdate,
+                ss.startdate, 
+                ss.insp_type as subcont_or_person , 
+                ss.is_boss, 
+                ss.whysub, 
+                ss.condation, 
+                ss.implimint, 
+                ss.timeing, 
+                ss.cooperation, 
+                ss.overall, 
+                ss.perioddays, 
+                ss.localprice, 
+                ss.externelprice, 
+                ss.remarks,
+                ss.approved,
+                ss.user_ins,
+            i.inspid, 
+                i.insp_type, 
+                i.first_name, 
+                i.mid_name, 
+                i.last_name, 
+                i.passport, 
+                i.idcard, 
+                i.country   as insp_country, 
+                i.depid     as insp_dep, 
+                i.qualiid, 
+                i.fld_exp, 
+                i.insp_exp, 
+                i.contid, 
+                i.mobile    as insp_mobile, 
+                i.email     as insp_email, 
+                i.fax       as insp_fax, 
+                i.phone     as insp_phone, 
+                i.donor, 
+                i.graddate, 
+                i.crdate, 
+                i.isactive as insp_is_active, 
+                i.inspphoto, 
+                i.loginname, 
+                i.loginpassword, 
+                i.issuing_certi 
             from fdl.t_mproj m
             left join fdl.t_proj p
             on p.mprojid = m.mprjid

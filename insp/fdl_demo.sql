@@ -244,25 +244,26 @@ UPDATE fdl.s_groups_apps
 insert into fdl.s_steps (act,txt,grp,txt1)
  values
  --   act        |txt                                   |grp      |txt1
-    ('fax'      ,'send fax'                             , '5'     ,'إرسال الفاكس'                 ),       
-    ('assign'   ,'Inspectors assign'                    , '5'     ,'يعين المفتشون'                ),       
-    ('approve'  ,'Approve insp by tech Manger '         , '3'     ,'اعتماد من قبل الادارة الفنية' ),       
-    ('approve'  ,'Approve insp by GM '                  , '2'      ,'اعتماد المفتش من المدير العام'),       
-    ('E-insp'   ,'Send E-mail to supplier about insp'   , '3'     ,'ارسال ايميل للبائع عن المفتش' ),       
-    ('ticket'   ,'Ticket issuing'                       , '4'     ,'إصدار التذاكر'                ),       
-    ('arrival'  ,'The arrival of the inspector'         , '6'    ,'وصول المفتش'                  ),       
-    ('meeting'  ,'Meeting Agenda Or Hold of inspection' , '6'    ,'اجتماع الاول'                 ),       
-    ('declare'  ,'Declaration of responsibility'        , '6'    ,'إعلان المسؤولية'              ),       
-    ('daily'    ,'Daily reports'                        , '6'    ,'التقارير اليومية'             ),       
-    ('letter'   ,'Letter of permission'                 , '6'    ,'خطاب إذن'                     ),       
-    ('shipp'    ,'Shipping survey'                      , '6'    ,'مسح الشحن'                    ),       
-    ('fitnes'   ,'Certificate of fitness'               , '6'    ,'شهادة اللياقة البدنية'        ),       
-    ('cont'     ,'Containers inspection report'         , '6'    ,'تقرير تفتيش الحاويات'         ),       
-    ('f_rep'    ,'Final Report'                         , '6'    ,'التقرير الأخير'               ),       
-    ('fee'      ,'Inspection fees'                      , '6'    ,'رسوم التفتيش'                 ),       
-    ('docs'     ,'Transference  Inspection docs'        , '6'    ,'مستندات فحص النقل'            ),       
-    ('samples'  ,'Receipt of samples'                   , '6'    ,'استلام العينات'               ),       
-    ('certifi'  ,'Certification'                        , '6'    , 'اصدار الشهادة'               );       
+    ('fax'          ,'send fax'                             , '5'     ,'إرسال الفاكس'                 ),       
+    ('assign'       ,'Inspectors assign'                    , '5'     ,'يعين المفتشون'                ),       
+    ('approve'      ,'Approve insp by tech Manger '         , '3'     ,'اعتماد من قبل الادارة الفنية' ),       
+    ('approve'      ,'Approve insp by GM '                  , '2'      ,'اعتماد المفتش من المدير العام'),       
+    ('mail-print'   ,'email and print to insp'              , '5'      ,'مراسلة وطباعة القرار'),       
+    ('E-insp'       ,'Send E-mail to supplier about insp'   , '3'     ,'ارسال ايميل للبائع عن المفتش' ),       
+    ('ticket'       ,'Ticket issuing'                       , '4'     ,'إصدار التذاكر'                ),       
+    ('arrival'      ,'The arrival of the inspector'         , '6'    ,'وصول المفتش'                  ),       
+    ('meeting'      ,'Meeting Agenda Or Hold of inspection' , '6'    ,'اجتماع الاول'                 ),       
+    ('declare'      ,'Declaration of responsibility'        , '6'    ,'إعلان المسؤولية'              ),       
+    ('daily'        ,'Daily reports'                        , '6'    ,'التقارير اليومية'             ),       
+    ('letter'       ,'Letter of permission'                 , '6'    ,'خطاب إذن'                     ),       
+    ('shipp'        ,'Shipping survey'                      , '6'    ,'مسح الشحن'                    ),       
+    ('fitnes'       ,'Certificate of fitness'               , '6'    ,'شهادة اللياقة البدنية'        ),       
+    ('cont'         ,'Containers inspection report'         , '6'    ,'تقرير تفتيش الحاويات'         ),       
+    ('f_rep'        ,'Final Report'                         , '6'    ,'التقرير الأخير'               ),       
+    ('fee'          ,'Inspection fees'                      , '6'    ,'رسوم التفتيش'                 ),       
+    ('docs'         ,'Transference  Inspection docs'        , '6'    ,'مستندات فحص النقل'            ),       
+    ('samples'      ,'Receipt of samples'                   , '6'    ,'استلام العينات'               ),       
+    ('certifi'      ,'Certification'                        , '6'    , 'اصدار الشهادة'               );       
      
 -- Country Data 
 INSERT INTO fdl.h_country (cntryID,cntryName ) VALUES 
@@ -403,9 +404,11 @@ update  fdl.t_company
               web= 'www.best-ly.com',
               email= 'info@best-ly.com',
               insu ='312312312',
-              cr = '62918' 
+              cr = '62918',
+              from_email = 'insp.fdl.mail@gmail.com',
+              from_e_pwd = 'Seafao2020' 
     WHERE
-     ID = 'AIC';
+     id = 'AIC';
     
     
 -- Qualifications Data  
