@@ -203,14 +203,14 @@ insert into fdl.s_users (login,pswd,name,email,active,activation_code,priv_admin
     ( 'insp',md5('123'),'Alvie'     ,'amcturley5@gnu.org'           ,'Y','','N',null,'N','N'),
     (  'mix',md5('123'),'Leo'       ,'lsaing6@narod.ru'             ,'Y','','N',null,'N','N');
 
-INSERT INTO fdl.s_groups (group_id, description,   issuing_certi,email) VALUES
-    (1 ,'Administrator'                                , 'Y',"hk.jidar.fdl@gmail.com"),
-    (2 ,'General Director'                             , 'Y',"hk.jidar.fdl@gmail.com"),
-    (3 ,'Technical Manager'                            , 'N',"hk.jidar.fdl@gmail.com"),
-    (4 ,'Financial and administrative'                 , 'N',"hk.jidar.fdl@gmail.com"),
-    (5 ,'technical departments'                        , 'N',"hk.jidar.fdl@gmail.com"),
-    (6 ,'Inspectores'                                  , 'N',"hk.jidar.fdl@gmail.com"), -- this record only use by inspectores
-    (7 ,'Certification print'                          , 'N',"hk.jidar.fdl@gmail.com");
+INSERT INTO fdl.s_groups (group_id, description,   issuing_certi,email,arab_des) VALUES
+    (1 ,'Administrator'                , 'Y',"hk.jidar.fdl@gmail.com",'مدير المنظومة'),
+    (2 ,'General Director'             , 'Y',"hk.jidar.fdl@gmail.com",'المدير العام'),
+    (3 ,'Technical Manager'            , 'N',"hk.jidar.fdl@gmail.com",'مدير الادارة الفنية'),
+    (4 ,'Financial and administrative' , 'N',"hk.jidar.fdl@gmail.com",'مسؤل المالية'),
+    (5 ,'technical departments'        , 'N',"hk.jidar.fdl@gmail.com",'القسم الفني'),
+    (6 ,'Inspectores'                  , 'N',"hk.jidar.fdl@gmail.com",'المفتش'), -- this record only use by inspectores
+    (7 ,'Certification print'          , 'N',"hk.jidar.fdl@gmail.com",'مسؤل الشهائد');
     
 insert into fdl.s_users_groups (`login`,group_id)
     values

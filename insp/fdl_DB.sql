@@ -608,7 +608,12 @@ create table fdl.s_groups_apps (
 -- modified secuerty system
 alter table fdl.s_users add userphoto longblob, add inspid int, add issuing_certi VARCHAR(1) default 'N', add control_certi varchar(1) default 'N' ;
 alter table fdl.s_apps add section tinyint ;
-alter table fdl.s_groups add  issuing_certi VARCHAR(1) default 'N', add control_certi varchar(1) default 'N' , add signat longblob , add email varchar(225);
+alter table fdl.s_groups 
+    add  issuing_certi VARCHAR(1) default 'N', 
+    add control_certi varchar(1) default 'N' , 
+    add signat longblob , 
+    add email varchar(225),
+    add arab_des varchar(225);
 create table fdl.s_users_dep (
         `login` VARCHAR(255) NOT NULL,
         depid varchar(2) NOT NULL,
