@@ -10,7 +10,8 @@
 --   mysql DATABASE                                                   
 --   developer updates table
 --   27-03-10-16AM                                                                 
---   27-03-2020 20:14 PM                                                                
+--   27-03-2020 20:14 PM 
+--   28-03-2020 12:26 PM                                                               
 --   --------------------------------------------------------------   
 --   host     : localhost                                             
 --   port     : 3306                                                  
@@ -488,6 +489,7 @@ create table fdl.t_ticket
         seats_level varchar(1), 
         inspid int not null,
         projid int not null,
+        approve_msg varchar(225), -- write by hand that you buy the ticket
         primary key (projid,inspid),
         foreign key (arrival)   references fdl.h_country (cntryid) on update cascade  ,
         foreign key (departure) references fdl.h_country (cntryid) on update cascade  ,
@@ -898,8 +900,30 @@ create trigger fdl.set_steps after update on fdl.t_inspprocass for each row
             update fdl.t_proj set steps = txt where projid = new.projid ;
         END IF;
     end;
-
-
+create trigger fdl.set_steps_in_proj_after_buy_ticket before update on fdl.t_ticket for each row
+    begin
+        declare txt  varchar(25);
+        declare val varchar(25);
+    
+        select  steps  into val  from fdl.t_proj where projid = new.projid ;
+        IF substing(val,8,1) <> '1' THEN 
+            IF (old.approve_msg  is null) &&  (new.approve_msg  is not null)  THEN
+                set txt = concat(substring(val,1,7),'1',substring(val,9)) ;
+                update fdl.t_proj set steps = txt where projid = new.projid ;
+            END IF;
+        END IF;
+    end;
+create trigger fdl.set_steps_in_proj_after_issue_ticket after insert on fdl.t_ticket for each row
+    begin
+        declare txt  varchar(25);
+        declare val varchar(25);
+    
+        select  steps  into val  from fdl.t_proj where projid = new.projid ;
+ 
+        set txt = concat(substring(val,1,6),'1',substring(val,8)) ;
+        update fdl.t_proj set steps = txt where projid = new.projid ;
+ 
+    end;
 --      end triggers
 
 --    [ Stored proceduers ] --
