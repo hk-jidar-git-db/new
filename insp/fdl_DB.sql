@@ -8,8 +8,9 @@
 --                                                                    
 --   inspection DATABASE version 1.0.0                                
 --   mysql DATABASE                                                   
---                                                                    
---                                                                    
+--   developer updates table
+--   27-03-10-16AM                                                                 
+--   27-03-2020 20:14 PM                                                                
 --   --------------------------------------------------------------   
 --   host     : localhost                                             
 --   port     : 3306                                                  
@@ -279,7 +280,6 @@ create table fdl.t_proj (
     isactive tinyint default 1, -- active = 1 , not active=0
     conclusion longtext ,
     is_f_fax_ok tinyint , -- is first fax send it 0= No 1 = Yes 
-    is_assign_insp varchar(3) default '000',
     is_insp_ticket varchar(1) default 'N' , -- N: nothing to do W:wait for ticket F:Finish job
     fee decimal(15,3), -- the fee sendit
     is_send_frep varchar(1) default 'N', -- Y = sendeit is the final report was send it
@@ -478,16 +478,23 @@ create table fdl.t_certi (
 
 create table fdl.t_ticket 
     (
-        arrival  char(2),
-        departure char(2),
-        tranporter varchar(225),
-        seats_level varchar(1),
-        travel_date timestamp,
-        inspid int ,
-        primary key (travel_date,inspid),
-        foreign key (arrival) references h_country (cntryid),
-        foreign key (departure) references h_country (cntryid),
-        foreign key (inspid) references t_insp (inspid)
+        arrival  char(2),  
+        departure char(2),  
+        sugest_date date, 
+        find_date  date, 
+        arrival1  char(2),   
+        departure1 char(2),  
+        tranporter varchar(225), 
+        seats_level varchar(1), 
+        inspid int not null,
+        projid int not null,
+        primary key (projid,inspid),
+        foreign key (arrival)   references fdl.h_country (cntryid) on update cascade  ,
+        foreign key (departure) references fdl.h_country (cntryid) on update cascade  ,
+        foreign key (arrival1)   references fdl.h_country (cntryid) on update cascade  ,
+        foreign key (departure1) references fdl.h_country (cntryid) on update cascade  ,
+        foreign key (inspid)    references fdl.t_insp (inspid)     on update cascade  ,
+        foreign key (projid)    references fdl.t_proj (projid)     on update cascade  
     );
 create table fdl.t_daily_report
     (
@@ -711,7 +718,6 @@ create view v_proj as
                 p.pro_inv_date ,
                 p.isactive as proj_is_active ,
                 p.conclusion  ,
-                p.is_assign_insp ,
                 p.is_insp_ticket ,
                 p.fee ,
                 p.is_send_frep ,
@@ -772,7 +778,7 @@ create view v_proj as
  --    [ END CREAT VIEW ] ---
 
 -- -------------- triggers -------
-create  trigger processplan
+create  trigger fdl.processplan
     after insert on t_proj for each row 
     begin
         -- this fill complete plann for new process
@@ -786,7 +792,7 @@ create  trigger processplan
         
     end;
 
-create trigger set_is_boss
+create trigger fdl.set_is_boss
     before insert on t_inspprocass for each row 
     BEGIN
         declare boss int ;
@@ -801,7 +807,7 @@ create trigger set_is_boss
         
     end;
 
-create trigger set_app_to_each_group
+create trigger fdl.set_app_to_each_group
     after insert on s_groups for each row 
     BEGIN
         declare bool char(1) ;
@@ -818,7 +824,7 @@ create trigger set_app_to_each_group
         
     end;
 
-create trigger unique_login_users before insert on fdl.s_users
+create trigger fdl.unique_login_users before insert on fdl.s_users
     for each row begin
     declare c int;
     select count(*) into c from fdl.t_insp where loginname = new.`login`;
@@ -828,7 +834,7 @@ create trigger unique_login_users before insert on fdl.s_users
     end if;
     end;
 
-create trigger unique_login_insp before insert on fdl.t_insp
+create trigger fdl.unique_login_insp before insert on fdl.t_insp
     for each row begin
     declare c int;
     select count(*) into c from fdl.s_users where `login` = new.loginname;
@@ -838,7 +844,7 @@ create trigger unique_login_insp before insert on fdl.t_insp
     end if;
     end;
 
-create trigger groups_prevent_from_deletion before delete on s_groups for each row
+create trigger fdl.groups_prevent_from_deletion before delete on s_groups for each row
     begin
         if old.group_id < 11 then -- will only abort deletion for specified ids
             signal sqlstate '45000' -- "unhandled user-defined exception"
@@ -846,21 +852,13 @@ create trigger groups_prevent_from_deletion before delete on s_groups for each r
             set message_text = 'this record is sacred! you are not allowed to remove it!!';
         end if;
     end;
-create trigger set_is_assign_insp after insert on fdl.t_inspprocass for each row
- begin
-    declare str varchar(3) ;
-   select is_assign_insp into str from fdl.t_proj where projid = new.projid ;
-   set str = substr(str,1);
-   set str = concat('1',str);
-   update fdl.t_proj set  is_assign_insp = str , is_insp_ticket = 'W' where projid = new.projid ; 
- end;
-create trigger sn_containers before insert on fdl.t_cont for each row
+create trigger fdl.sn_containers before insert on fdl.t_cont for each row
     begin
         declare id tinyint ;
         select count(*) into id from fdl.t_cont where projid = new.projid;
         set new.sn = id + 1 ;
     end;
-create trigger smapl_id before insert on fdl.t_samples for each row
+create trigger fdl.smapl_id before insert on fdl.t_samples for each row
  begin
    declare company varchar(5);
    declare insp varchar(100);
@@ -875,19 +873,19 @@ create trigger smapl_id before insert on fdl.t_samples for each row
     set new.sn = sn+1 ;
  end;
 
-create trigger set_depid_i before insert  on fdl.t_daily_report for each row
+create trigger fdl.set_depid_i before insert  on fdl.t_daily_report for each row
     begin
       declare dep varchar(2);
       select depid into dep from fdl.t_insp where inspid = new.inspid ;
       set new.depid = dep ;
     end;
-create trigger set_depid_u before update  on fdl.t_daily_report for each row
+create trigger fdl.set_depid_u before update  on fdl.t_daily_report for each row
     begin
         declare dep varchar(2);
         select depid into dep from fdl.t_insp where inspid = new.inspid ;
         set new.depid = dep ;
     end;
-create trigger set_steps after update on fdl.t_inspprocass for each row
+create trigger fdl.set_steps after update on fdl.t_inspprocass for each row
     begin
        declare txt varchar(20) ;
         select steps into txt from fdl.t_proj where projid = new.projid ;
@@ -900,6 +898,8 @@ create trigger set_steps after update on fdl.t_inspprocass for each row
             update fdl.t_proj set steps = txt where projid = new.projid ;
         END IF;
     end;
+
+
 --      end triggers
 
 --    [ Stored proceduers ] --
