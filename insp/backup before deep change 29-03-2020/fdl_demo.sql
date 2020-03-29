@@ -6,6 +6,64 @@ insert into fdl.s_groups_apps (group_id ,app_name ,priv_access,priv_insert,priv_
   select 1,app_name,'Y','Y','Y','Y','Y','Y' from s_apps ;
  /* t_plannItems Data as vary from company to company */
 
+insert into fdl.t_p_sect (sec_id,sec_descrip,sec_status)
+  values
+      (1,'Thechnical department',5),
+      (2,'During the first meeting with the seller',0),
+      (3,'Performing the work inside the factory',0),
+      (4,'If shipping in ship',0),
+      (5,'If shipping in containers',0),
+      (6,'Inspection of Pallets',0),
+      (7,'Samples',0),
+      (8,'fees',0),
+      (9,'Certification',0);
+
+insert into fdl.t_P_items (item_id,sec_id,item_name,item_status)
+   values
+      (1,1,'Send the first messaging',5),
+      (2,1,'Assigning an inspector',5),
+      (3,1,'Approval of the Inspector by the Director General',5),
+      (4,1,'Provide the inspector with documentation of the process',5),
+      (5,1,'To develop a sampling plan according to the quantity and quality of the goods and their location, including the full shipment.',5),
+      (6,1,'By transferring a fax to the supplier company, including the name of the Inspector in charge of the inspection and the date of his arrival on the day, hour and place.',5),
+      (7,2,'Signing the Inspector Access Form',1),
+      (8,2,'Form of commitment to liability under contract terms',0),
+      (9,2,'Product specification.',0),
+      (10,2,'packing list',0),
+      (11,2,'Initial approved invoice.',0),
+      (12,2,'commercial invoice.',0),
+      (13,2,'Certificate of origin of goods.',0),
+      (14,2,'Certificate of product quality or product validity for consumption and container numbers if shipping is in containers.',0),
+      (15,2,'Whether or not the goods are ready for inspection.',0),
+      (16,2,'In the event that the goods or containers are not ready, and the documents do not comply with the conditions of the buyer or any objects that obstruct the inspection, the inspection shall be stopped,',0),
+      (17,3,'The laboratory will be checked for some virtual and initial tests.',0),
+      (18,3,'Make sure that the indications on packaging and packaging material are consistent with the terms of the contract.',0),
+      (19,3,'During the manufacturing process,/n the inspector withdraws periodic random samples according to the quality of the goods and ensures that they conform to the terms of the virtual contract and perform the tests in the factory factory, which gives an initial indication of the acceptance of the goods and that the final evaluation of the shipment is based on the results of analyzes received from one of the laboratories approved by the companys work system.',0),
+      (20,3,'Send daily reports explaining the quantities produced, daily working conditions and any difficulties you may face.',0),
+      (21,4,'The inspector fills in the captain permission form to enter the vessel.',0),
+      (22,4,'The inspector checks the ships documents and makes sure they are valid: (Class certificate,0),(B & I  certificate)',0),
+      (23,4,'Verify the validity of the ship certificates',0),
+      (24,4,'The ship winches are sure to be fit for loading and unloading and they work well',0),
+      (25,4,'The inside of the wards is accessed by the inspector and the amber is locked inside to make sure that the lid does not have holes and to further confirm the test (water test)',0),
+      (26,4,'Insects are checked to make sure they are free of insects.',0),
+      (27,4,'Make sure they are free of water before starting shipping',0),
+      (28,4,'Upon completion, a test report of the model vessel is completed and the inspector issues a certificate stating that the vessel is suitable for transporting the goods.',0),
+      (29,5,'When the container arrives at the shipping site, the seller opens the doors of the container and identifies the goods to be shipped in this container.',0),
+      (30,5,'The inspector will inspect the regular container according to Form No. (QP-06 / F10).',0),
+      (31,5,'The inspector will inspect the refrigerated container according to model No. (QP-06 / F24).',0),
+      (32,5,'Check the doors in terms of rubber insulation and lock tightness.',0),
+      (33,5,'Container free of holes and openings.',0),
+      (34,5,'Safety of the floor and free from the remnants of the previous shipment and clean.',0),
+      (35,6,'The inspector checks the modulators according to model (QP-06 / F25).',0),
+      (36,6,'Check the cleanliness of the hides and insects.',0),
+      (37,7,'Send samples to the laboratory',0),
+      (38,7,'Receive reports from laboratories and inspectors',0),
+      (39,7,'Save samples',0),
+      (40,8,'Collection of inspection fees',0),
+      (41,9,'Issuing the certificate',0);
+
+
+
 insert into fdl.s_apps_sec(id , section) VALUES
     (1,'Company data'),
     (2,'Dealers'),
@@ -45,6 +103,16 @@ INSERT INTO fdl.s_apps(app_name, app_type,section, description) VALUES
     ('fInspdocs'         ,'form'  ,4, '' ),
     ('f_select_insp'     ,'form'  ,4, '' ),
     ('g_select_insp'     ,'cons'  ,4, '' ),
+    -- inspections proces
+    ('gSec_insp_steps'   ,'cons'  ,5, '' ),
+    ('fSec_insp_steps'   ,'form'  ,5, '' ),
+    ('gItems_insp_steps' ,'cons'  ,5, '' ),
+    ('fItem_insp_steps'  ,'form'  ,5, '' ),
+    ('g_t_p_sect'        ,'cons'  ,5, '' ),
+    ('c_aprove_sec'      ,'contr' ,5, '' ),
+    ('gInspplann'        ,'cons'  ,5, '' ),
+    ('fInspplann'        ,'form'  ,5, '' ),
+    ('fInspplanndoc'     ,'form'  ,5, '' ),
     -- certification
     ('c_Issue_certi'     ,'contr' ,6,''  ),
     ('f_t_certi'         ,'form'  ,6,''  ),
@@ -78,6 +146,16 @@ INSERT INTO fdl.s_apps_desc(app_name, ar, en) VALUES
     ('fInspdocs'         ,'مستندات التفتيش'	                  ,	'Inspection documents'),
     ('f_select_insp'     ,'تعيين مفتش'	                      ,	'Assign inspector'),
     ('g_select_insp'     ,'قائمة المفتشيين المختارين'	     ,	'List of selected inspectors'),
+    -- inspections process
+    ('gSec_insp_steps'   ,'قائمة نموذج اقسام خطة التفتيش '	,	'List of inspection plan sections template'),
+    ('fSec_insp_steps'   ,'نموذج اقسام خطة التفتيش '	     ,	'inspection plan section template' ),
+    ('gItems_insp_steps' ,'قائمة نموذج  خطة التفتيش'	     ,	'List of inspection plan template'),
+    ('fItem_insp_steps'  ,'نموذج تفاصيل خطة التفتيش'	     ,	'inspection plan details template'),
+    ('g_t_p_sect'        ,'قائمة اقسام نموذج العملية'	     ,	'List of inspection plan sections for process '),
+    ('c_aprove_sec'      ,'اعتماد قسم  العملية بالكامل'	     ,	'Approval process section' ),
+    ('gInspplann'        ,'مخطط التفتيش'	                  ,	'Inspection plan'),
+    ('fInspplann'        ,'خطة التفتيش'	                      ,	'Inspection plan'),
+    ('fInspplanndoc'     ,'مستندات خطة التفتيش'	             ,	'Inspection plan documents'),
     -- certification
     ('c_Issue_certi'     ,'اصدار الشهادة'	                  ,	'Issuing the certificate'),
     ('f_t_certi'         ,'تعديل بيانات الشهادة'	         ,	'Modifying certificate data'),
@@ -88,6 +166,31 @@ INSERT INTO fdl.s_apps_desc(app_name, ar, en) VALUES
 
 
 
+-- Inspection Forms 
+INSERT INTO fdl.t_inspForms (
+        formID,
+        formName,
+        isActive
+    ) VALUES 
+    ('QP-06-F05','ﻭﺻﻮﻝ ﺍﻟﻤﻔﺘﺶ',1),
+    ('QP-06-F06','الإجتماع الأول',1),
+    ('QP-06-F07','تعهد بالمسؤولية حسب شروط',1),
+    ('QP-06-F08','إيقاف التفتيش',1),
+    ('QP-06-F09','التقارير اليومية',1),
+    ('QP-06-F10','تقرير التفتيش على الحاويات',1),
+    ('QP-06-F14','تقرير التفتيش النهائي',1),
+    ('QP-06-F15','فاتورة أتعاب التفتيش',1),
+    ('QP-06-F18','المستندات المسلمة للمفتش',1),
+    ('QP-06-F25','تقرير التفتيش على البدنات',1),
+    ('QP-06-F11','إذن دخول باخرة',1),
+    ('QP-06-F12','تقرير تفتيش باخرة',1),
+    ('QP-06-F13','شهادة صلاحية الباخرة',1),
+    ('QP-06-F24','تقرير التفتيش على الحاويات المبردة',1),
+    ('QP-07-F1','قائمة المفتشين المعتمدين',1),
+    ('QP-07-F2','عقد عمل مفتش',1),
+    ('QP-07-F3','نمودج تصنيف مفتش',1),
+    ('QP-07-F4','سجل تقييم العمليات المنفذة من المفتش',1),
+    ('QP-07-F5','سجل عمليات التفتيش التي قام بها المفتش ',1);
 
 -- data -----
 insert into fdl.s_users (login,pswd,name,email,active,activation_code,priv_admin,userphoto,issuing_certi,control_certi)
