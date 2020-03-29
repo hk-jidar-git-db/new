@@ -1,0 +1,21 @@
+'send fax'                              =  fdl.t_first_fax                                 
+'Inspectors assign'                     =  fdl.t_inspprocass  insert new record
+'Approve insp by tech Manger '          =  fdl.t_inspprocass  update set approved = '10' 
+'Approve insp by GM '                   =  fdl.t_inspprocass  update set approved = '11' 
+'email and print to insp'               =  fdl.t_insp_msg     insert new record (msg) value (email) 
+'Send E-mail to supplier about insp'    =  fdl.t_sup_msg      insert new record (msg) value (email) 
+'Ticket issuing'                        =  fdl.t_req_ticket   insert new record   
+'buy ticket'                            =  fdl.t_buy_ticket   insert new record    
+'The arrival of the inspector'          =  
+'Meeting Agenda Or Hold of inspection' 
+'Declaration of responsibility'        
+'Daily reports'                        
+'Letter of permission'                 
+'Shipping survey'                      
+'Certificate of fitness'               
+'Containers inspection report'         
+'Final Report'                         
+'Inspection fees'                      
+'Transference  Inspection docs'        
+'Receipt of samples'                   
+'Certification'                        

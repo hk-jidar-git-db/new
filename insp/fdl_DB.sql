@@ -36,6 +36,9 @@ CREATE DATABASE if NOT EXISTS fdl
 
  use fdl;
 
+-- global variables 
+ SET  @steps = 25; -- the number of inspection steps
+ 
 --   inspections forms to be ues in all the inspections 
 create table fdl.t_inspforms (
     formid varchar(225) not null primary key,
@@ -68,7 +71,7 @@ create table fdl.t_company (
     wh varchar(225), --   working hours 
     insu varchar(225), --   insurance number 
     from_email varchar(225), -- from E mail
-    from_e_pwd varchar(225) -- from E mail
+    from_e_pwd varchar(225), -- from E mail
     stamp longblob -- company stamp image
  );
 
@@ -906,7 +909,7 @@ create trigger fdl.set_steps_in_proj_after_buy_ticket before update on fdl.t_tic
         declare val varchar(25);
     
         select  steps  into val  from fdl.t_proj where projid = new.projid ;
-        IF substing(val,8,1) <> '1' THEN 
+        IF substring(val,8,1) <> '1' THEN 
             IF (old.approve_msg  is null) &&  (new.approve_msg  is not null)  THEN
                 set txt = concat(substring(val,1,7),'1',substring(val,9)) ;
                 update fdl.t_proj set steps = txt where projid = new.projid ;
@@ -924,13 +927,21 @@ create trigger fdl.set_steps_in_proj_after_issue_ticket after insert on fdl.t_ti
         update fdl.t_proj set steps = txt where projid = new.projid ;
  
     end;
+create trigger fdl.test before update on fdl.t_company for each row
+    begin
+        set new.wh = 'fadsfsd ';
+    end;
 --      end triggers
 
 --    [ Stored proceduers ] --
- 
+-- create procedure fdl.update_steps_fld 
 
 -- [ End stored procedures]
+-- [ user defined function ] --
 
+
+
+-- [ end user defined function ]
 
 
 use fdl_proj;
