@@ -140,29 +140,29 @@ UPDATE fdl.s_groups_apps
 
 insert into fdl.s_steps (act,txt,grp,txt1)
  values
- --   act        |txt                                   |grp      |txt1
-    ('fax'          ,'send fax'                             , '5'     ,'إرسال الفاكس'                 ),       
-    ('assign'       ,'Inspectors assign'                    , '5'     ,'يعين المفتشون'                ),       
-    ('approve'      ,'Approve insp by tech Manger '         , '3'     ,'اعتماد من قبل الادارة الفنية' ),       
-    ('approve'      ,'Approve insp by GM '                  , '2'      ,'اعتماد المفتش من المدير العام'),       
-    ('mail-print'   ,'email and print to insp'              , '5'      ,'مراسلة وطباعة القرار'),       
-    ('E-insp'       ,'Send E-mail to supplier about insp'   , '3'     ,'ارسال ايميل للبائع عن المفتش' ),       
-    ('ticket'       ,'Ticket issuing'                       , '5'     ,'طلب شراء تذاكر'                ),       
-    ('ticket'       ,'buy ticket'                           , '4'     ,'تم الشراء'                   ),       
-    ('arrival'      ,'The arrival of the inspector'         , '6'    ,'وصول المفتش'                  ),       
-    ('meeting'      ,'Meeting Agenda Or Hold of inspection' , '6'    ,'اجتماع الاول'                 ),       
-    ('declare'      ,'Declaration of responsibility'        , '6'    ,'إعلان المسؤولية'              ),       
-    ('daily'        ,'Daily reports'                        , '6'    ,'التقارير اليومية'             ),       
-    ('letter'       ,'Letter of permission'                 , '6'    ,'خطاب إذن'                     ),       
-    ('shipp'        ,'Shipping survey'                      , '6'    ,'مسح الشحن'                    ),       
-    ('fitnes'       ,'Certificate of fitness'               , '6'    ,'شهادة اللياقة البدنية'        ),       
-    ('cont'         ,'Containers inspection report'         , '6'    ,'تقرير تفتيش الحاويات'         ),       
-    ('f_rep'        ,'Final Report'                         , '6'    ,'التقرير الأخير'               ),       
-    ('fee'          ,'Inspection fees'                      , '6'    ,'رسوم التفتيش'                 ),       
-    ('docs'         ,'Transference  Inspection docs'        , '6'    ,'مستندات فحص النقل'            ),       
-    ('samples'      ,'Receipt of samples'                   , '6'    ,'استلام العينات'               ),       
-    ('certifi'      ,'Certification'                        , '6'    , 'اصدار الشهادة'               );       
-     
+ --   act           |txt                                   |grp         |txt1
+    ('fax'          ,'send fax'                             , '5'       ,'إرسال الفاكس'                 ),       
+    ('assign'       ,'Inspectors assign'                    , '5'       ,'يعين المفتشون'                ),       
+    ('approve'      ,'Approve insp by tech Manger '         , '3'       ,'اعتماد من قبل الادارة الفنية' ),       
+    ('approve'      ,'Approve insp by GM '                  , '2'        ,'اعتماد المفتش من المدير العام'),       
+    ('mail-print'   ,'email and print to insp'              , '5'        ,'مراسلة وطباعة القرار'),       
+    ('E-insp'       ,'Send E-mail to supplier about insp'   , '3'       ,'ارسال ايميل للبائع عن المفتش' ),       
+    ('ticket'       ,'Ticket issuing'                       , '5'       ,'طلب شراء تذاكر'                ),       
+    ('ticket'       ,'buy ticket'                           , '4'       ,'تم الشراء'                   ),       
+    ('arrival'      ,'The arrival of the inspector'         , '6'      ,'وصول المفتش'                  ),       
+    ('meeting'      ,'Meeting Agenda Or Hold of inspection' , '6'      ,'اجتماع الاول'                 ),       
+    ('declare'      ,'Declaration of responsibility'        , '6'      ,'إعلان المسؤولية'              ),       
+    ('daily'        ,'Daily reports'                        , '6'      ,'التقارير اليومية'             ),       
+    ('letter'       ,'Letter of permission'                 , '6'      ,'خطاب إذن'                     ),       
+    ('shipp'        ,'Shipping survey'                      , '6'      ,'مسح الشحن'                    ),       
+    ('fitnes'       ,'Certificate of fitness'               , '6'      ,'شهادة اللياقة البدنية'        ),       
+    ('cont'         ,'Containers inspection report'         , '6'      ,'تقرير تفتيش الحاويات'         ),       
+    ('f_rep'        ,'Final Report'                         , '6'      ,'التقرير الأخير'               ),       
+    ('fee'          ,'Inspection fees'                      , '6'      ,'رسوم التفتيش'                 ),       
+    ('docs'         ,'Transference  Inspection docs'        , '6'      ,'مستندات فحص النقل'            ),       
+    ('samples'      ,'Receipt of samples'                   , '6'      ,'استلام العينات'               ),       
+    ('certifi'      ,'Certification'                        , '6'      , 'اصدار الشهادة'               );       
+ 
 -- Country Data 
 INSERT INTO fdl.h_country (cntryID,cntryName ) VALUES 
     (	'TH'	,	'Thailand'	),
@@ -688,24 +688,7 @@ INSERT INTO  fdl.t_mproj (
     (	 2,'349-68-9839',13 , 'Hemidictyum'                     ,'Drainage of Left Foot Muscle with Drain Dev Perc Approach'	,	'992743377-8'	,	'814-08-5820'	,	18769571.14	,	'8,9,3'         ,	8038406	,	2951333 ,'MD'	),
     (	 3,'803-48-7192',9  , 'Chess-apple'                     ,'Reposition Sciatic Nerve Open Approach'	                    ,	'803549005-2'	,	'212-37-5807'	,	18083557.38	,	'37,53,50,40'	,	6939550	,	3915071 ,'PD'	),
     (	 4,'500-58-8734',10 , 'Beatleys Buckwheat'              ,'Revision of Drain Dev in Sacrococcygeal Jt Open Approach'	    ,	'193721600-4'	,	'200-12-0757'	,	16791347.17	,	'11,15'	        ,	5150248	,	1531008 ,'FD'	),
-    (	 5,'513-01-1098',5  , 'Slender Toothwort'               ,'Removal of Nonaut Sub from Low Tendon Open Approach'	        ,	'625355427-1'	,	'157-46-9777'	,	10978522.84	,	'20,18'	        ,	8046301	,	3571343 ,'FD'	),
-    (	 6,'449-56-6060',2  , 'Leafy Bulrush'                    ,'Division of Esophagogastric Junction Percutaneous Approach'	,	'559276544-4'	,	'805-93-1279'	,	1989737.76	,	'13,15'	        ,	8526081	,	5557666 ,'FD'	),
-    (	 7,'816-52-0822',9  , 'Spinycape'                       ,'MRI of Lung Apices using Oth Contrast Unenh Enhance'	        ,	'508020923-2'	,	'139-24-4444'	,	8774933.32	,	'7,8'	        ,	8355390	,	994993  ,'MD'	),
-    (	 8,'615-98-9936',12 , 'Bahama Nightshade'               ,'Mental Health Counseling'	                                    ,	'045967823-X'	,	'586-53-3738'	,	13003530.72	,	'37,45,39'	    ,	3101434	,	4245011 ,'PD'	),
-    (	 9,'165-95-5176',15 , 'Common Woodrush'                 ,'Fusion Thor Jt w Intbd Fus Dev Post Appr A Col Open'	        ,	'949700322-6'	,	'251-56-8058'	,	24585176.61	,	'21'	        ,	977062	,	3937274 ,'MT'   ),
-    (	10,'485-60-1818',7  , 'Large Bullwort'                  ,'Drainage of Bladder Endo'	                                    ,	'798629049-8'	,	'583-24-6853'	,	19633001.48	,	'1,2'	        ,	6598538	,	6131597 ,'MD'	),
-    (	11,'647-18-4878',3  , 'White Avens'                     ,'Occlusion of Pancreatic Duct Via Opening'	                    ,	'317144574-3'	,	'425-53-5393'	,	2208934.54	,	'12,15'	        ,	3388959	,	3804595 ,'FD'	),
-    (	12,'285-81-5832',10 , 'Beadles Mountainmint'            ,'Excision of Left Large Intestine Perc Endo Approach'	        ,	'702005895-7'	,	'121-54-2322'	,	2190021.13	,	'1,5'	        ,	4930566	,	5626833 ,'MD'	),
-    (	13,'378-91-1543',12 , 'Mendrina'                        ,'Plain Radiography of Right Elbow using High Osmolar Contrast'	,	'071839664-2'	,	'646-86-8438'	,	23650200.46	,	'7,9'	        ,	8596886	,	3263353 ,'MD'	),
-    (	14,'865-86-3529',5  , 'Desert Centaury'                 ,'Drainage of Left Testis Perc Endo Approach Diagn'	            ,	'089063737-7'	,	'152-09-1612'	,	16681975.1	,	'38,39,50'	    ,	3457688	,	907025  ,'PD'	),
-    (	15,'130-07-6322',6  , 'Mountain Sandalwood'             ,'Bypass R Com Iliac Art to B Renal A w Autol Vn Perc Endo'	    ,	'784641353-8'	,	'614-11-9611'	,	13935508.38	,	'25,29'	        ,	1206191	,	5352523 ,'MT'	),
-    (	16,'402-37-2105',7  , 'African Cornflag'                ,'Dilate L Thyroid Art w Intralum Dev Perc Endo'	            ,	'184810882-6'	,	'299-91-2633'	,	12180337.92	,	'17'	        ,	8719520	,	803076  ,'FD'	),
-    (	17,'420-49-6221',12 , 'Showy Tarweed'                   ,'Dilation of Left Subclavian Artery Percutaneous Approach'	    ,	'206870450-1'	,	'836-87-9654'	,	18350115.37	,	'5,9'	        ,	2494546	,	6927216 ,'MD'	),
-    (	18,'725-09-1843',2  , 'Anomobryum Moss'                 ,'Excision of Left Fallopian Tube Perc Approach Diagn'	        ,	'391782420-5'	,	'297-92-4931'	,	7648937.08	,	'25,32'	        ,	4060402	,	886736  ,'MT'	),
-    (	19,'136-43-1956',14 , 'Cascade Popcornflower'           ,'Fusion of Left Wrist Joint with Nonaut Sub Perc Approach'     ,	'205040796-3'	,	'503-63-2012'	,	14203520.39	,	'28'	        ,	4204635	,	1411068 ,'MT'	),
-    (	20,'565-25-4916',7  , 'Mex''s Fleabane'                 ,'Supplement L Little Finger w Autol Sub Perc Endo'	            ,	'783925741-0'	,	'625-10-4390'	,	21608734.43	,	'30,32'	        ,	3844521	,	6550053 ,'MT'	),
-    (	21,'198-17-9960',3  , 'Dotted Lichen'                   ,'Beam Radiation of Bone Marrow using Photons >10 MeV'	        ,	'747677709-3'	,	'103-58-9992'	,	1674051.86	,	'15'	         ,	7819866	,	1728743 ,'FD'	),
-    (	22,'777-55-7693',9  , 'Mayleaf Four O clock'            ,'Plain Radiography of L Fallop Tube using H Osm Contrast'	    ,	'076508700-6'	,	'873-35-4098'	,	11617058.71	,	'40,41'	        ,	5467466	,	657936  ,'PD'	);
+    (	 5,'513-01-1098',5  , 'Slender Toothwort'               ,'Removal of Nonaut Sub from Low Tendon Open Approach'	        ,	'625355427-1'	,	'157-46-9777'	,	10978522.84	,	'20,18'	        ,	8046301	,	3571343 ,'FD'	);
 
 -- Project Data 
 insert into fdl.t_proj 

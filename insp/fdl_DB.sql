@@ -747,9 +747,12 @@ create trigger fdl.set_is_boss_befor_ins before insert on fdl.t_inspprocass for 
         end if; 
         
     end;
+-- [set steps = 1(1)000000000000000  ]    
 create trigger fdl.set_approve_proj_tqbl after  insert on fdl.t_inspprocass for each row
     begin
-
+       declare vsteps varchar(25) ;
+       select steps into vsteps from fdl.t_proj where projid = new.projid ;
+       update fdl.t_proj set steps = concat(substring(vsteps,1,1),'1',substring(vsteps,3)) where projid = new.projid ; 
     end;
 create trigger fdl.set_app_to_each_group after  insert on fdl.s_groups for each row 
     BEGIN
@@ -852,7 +855,7 @@ create trigger fdl.set_stp_after_buy_tkt before update on fdl.t_ticket for each 
             END IF;
         END IF;
     end;
-create trigger fdl.set_stp_after_iss_tkt after insert on fdl.t_ticket for each row
+create trigger fdl.set_stp_after_iss_tkt after  insert on fdl.t_ticket for each row
     begin
         declare txt  varchar(25);
         declare val varchar(25);
