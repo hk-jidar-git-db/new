@@ -18,10 +18,13 @@
     --   DATABASE : fdl ,fdl_proj , fdl_dlrs                              
 
     --   [  DATABASES ]
+
+    -- [ Drop databases ]
     DROP DATABASE if EXISTS fdl_dlrs;
     DROP DATABASE if EXISTS fdl_proj;
     DROP DATABASE if EXISTS fdl;
 
+    -- [ Create databases ]
     CREATE DATABASE if NOT EXISTS fdl_dlrs
         character SET 'utf8'
         collate 'utf8_general_ci';
@@ -35,7 +38,6 @@
         collate 'utf8_general_ci';
 
     use fdl;
-
     --  [ TABLES ]
     create table fdl.h_country 
         (
@@ -69,7 +71,7 @@
         );
 
     INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
-
+    -- [ help tables ]
     create table fdl.h_dep 
         (
         depid char(2) not null primary key, --   mt,fd,md,pd 
@@ -89,7 +91,7 @@
         qualiid int auto_increment not null primary key,
         qualiname varchar(225) unique
         );
-
+    -- [ Basic table ]
     create table fdl.t_cust 
         (
             custid int auto_increment not null primary key,
@@ -268,8 +270,7 @@
             copyfile longblob ,
             foreign key (inspid) references t_insp(inspid)  on update cascade  on delete cascade
         );
-    --  -----------------------------------
-    -- [ steps tables]
+    -- [ steps tables ]
     create table fdl.t_first_fax
         (
             projid int not null primary key,
@@ -427,7 +428,7 @@
             foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
     -- fdl_proj DataBase  here proj docs [ transference inspection documents ]  but in the other database
-    create table  fdl_proj.t_projdoc -- transference inspection documents 
+    create table fdl_proj.t_projdoc -- transference inspection documents 
         (
             id integer not null auto_increment primary key,
             projid int not null,
@@ -494,9 +495,8 @@
         foreign key (projid) references t_proj(projid) 
         on update cascade 
         on delete cascade
-    );    
-    --  [ end of the steps tables  ]
-    -- ------------------------------    
+        );    
+   
     --   [ Secuirty Area ] --
     create table fdl.s_users 
         (
@@ -594,9 +594,8 @@
             grp tinyint
         );
 
-    --  [  End Secuirty ]
-    -- ----------------------- 
-    --    [ CREATE VIEW ] ---- 
+
+    --  [ CREATE VIEW ]  
     create view v_login AS
         SELECT  
                 priv_admin						, --  0
@@ -730,10 +729,10 @@
                 left join fdl.t_insp i
                 on i.inspid = ss.inspid
             );
-    --    [ END CREAT VIEW ] ---
+ 
 
 
-    --    [ triggers ] -------
+    --  [ triggers ]  
     create trigger fdl.set_is_boss_befor_ins before insert on fdl.t_inspprocass for each row 
         BEGIN
             declare boss int ;
@@ -747,8 +746,8 @@
             end if; 
             
         end;
-    -- [set steps = 1(1)000000000000000  ]    
     create trigger fdl.set_approve_proj_tqbl after  insert on fdl.t_inspprocass for each row
+        -- [set steps = 1(1)000000000000000  ]    
         begin
         declare vsteps varchar(25) ;
         select steps into vsteps from fdl.t_proj where projid = new.projid ;
@@ -852,12 +851,7 @@
 
         end;
 
-    --      end triggers
 
-    --    [ Stored proceduers ] --
-    -- create procedure fdl.update_steps_fld 
-
-    -- [ End stored procedures]
     -- [ user defined function ] --
     create function fdl.track(p_id int) returns varchar(25)
         begin
@@ -930,16 +924,11 @@
             return txt ;
         end;
 
-    -- [ end user defined function ]
 
 
-    use fdl_proj;
-    --   projects documents
 
-
-    use fdl_dlrs;
-    --   cust doc 
-    create table fdl_proj.t_custdocs (
+    -- [ cust doc ] 
+    create table fdl_dlrs.t_custdocs (
             id int auto_increment not null primary key,
             custid int not null,
             docname varchar(225),
@@ -947,8 +936,8 @@
             foreign key (custid) references fdl.t_cust(custid) on update cascade on delete cascade
         );
 
-    --   supplier doc 
-    create table fdl_proj.t_supdocs (
+    -- [ supplier doc ] 
+    create table fdl_dlrs.t_supdocs (
             id int auto_increment not null primary key,
             supid int not null,
             docname varchar(225),
