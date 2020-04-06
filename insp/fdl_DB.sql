@@ -67,7 +67,8 @@
             insu varchar(225), --   insurance number 
             from_email varchar(225), -- from E mail
             from_e_pwd varchar(225), -- from E mail
-            stamp longblob -- company stamp image
+            stamp longblob, -- company stamp image
+            rep_arrival longtext 
         );
 
     INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
@@ -639,6 +640,7 @@
                     m.qyagrosswt,
                     m.qyanetwt,
                 p.steps,
+                    concat(substring(i.first_name,1,1),substring(i.mid_name,1,1),substring(i.last_name,1,1),'/',p.projid) as ref
                     p.approv_hold ,
                     p.projid ,
                     p.code as proj_cod ,
@@ -924,6 +926,7 @@
             return txt ;
         end;
 
+ 
 
 
 
