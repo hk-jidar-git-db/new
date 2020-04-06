@@ -68,7 +68,7 @@
             from_email varchar(225), -- from E mail
             from_e_pwd varchar(225), -- from E mail
             stamp longblob, -- company stamp image
-            rep_arrival longtext 
+            rep_arrival longblob -- arrival form 
         );
 
     INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
@@ -357,8 +357,11 @@
     create table fdl.t_arriavl
         (
             projid int not null primary key,
-            s_date timestamp , -- start date 
-            note varchar(225),
+            inspid int not null,
+            arriv_date date,
+            s_date date,
+            time_on time,
+            foreign key (inspid) references fdl.t_insp(inspid) on update cascade,
             foreign key (projid) references fdl.t_proj(projid) on update  cascade
         );
     create table fdl.t_meeting
@@ -596,143 +599,6 @@
         );
 
 
-    --  [ CREATE VIEW ]  
-    create view v_login AS
-        SELECT  
-                priv_admin						, --  0
-                active    						, --  1  
-                name							, --  2  
-                email							, --  3 
-                userphoto		AS photo		, --  4 
-                issuing_certi					, --  5 
-                control_certi					, --  6 
-                "tech" 			AS speciality	, --  7   
-                null   			AS inspid  		,  --  8
-                login                           ,
-                pswd            
-        FROM    fdl.s_users 	
-        UNION
-        SELECT  "N"				AS priv_admin	, --  0													
-                isactive 		AS active 		, --  1
-                concat(first_name,' ',mid_name,' ',last_name) 		AS fullname		, --  2  
-                email							, --  3 
-                inspphoto 		AS photo		, --  4 
-                issuing_certi					, --  5 
-                "N"				AS control_certi, --  6 
-                "insp" 			AS speciality	, --  7 
-                inspid			  	  			, --  8
-                loginname       AS login        , -- 9
-                loginpassword   AS pswd	        	 						
-        FROM    fdl.t_insp ;
-
-    create view v_proj as
-            (
-                SELECT 
-                m.mprjid,
-                    m.custid ,
-                    m.code as mproj_code,
-                    m.depid,
-                    m.projname as mproj_name,
-                    m.lcreditno,
-                    m.subjpurchorderno,
-                    m.ms,
-                    m.totalaccred,
-                    m.qyagrosswt,
-                    m.qyanetwt,
-                p.steps,
-                    concat(substring(i.first_name,1,1),substring(i.mid_name,1,1),substring(i.last_name,1,1),'/',p.projid) as ref
-                    p.approv_hold ,
-                    p.projid ,
-                    p.code as proj_cod ,
-                    p.projname ,
-                    p.shipmentno ,
-                    p.shipmentvalue ,
-                    p.currency ,
-                    p.supid ,
-                    p.commodity ,
-                    p.vesselsname ,
-                    p.cntryid ,
-                    p.town ,
-                    p.origin_goods ,
-                    p.place_insp ,
-                    p.insp_date ,
-                    p.portdispach ,
-                    p.portdischarge ,
-                    p.loadfromdate ,
-                    p.loadtodate ,
-                    p.qyagrosswt as p_qyagrosswt ,
-                    p.qyanetwt as p_qyanetwt, 
-                    p.totalaccred as p_totalaccred, 
-                    p.mprojid ,
-                    p.bill_loading_no ,
-                    p.bill_loading_date ,
-                    p.invoice_no ,
-                    p.invoice_date ,
-                    p.total_packing ,
-                    p.l_c_nr ,
-                    p.pro_inv_no ,
-                    p.pro_inv_date ,
-                    p.isactive as proj_is_active ,
-                    p.conclusion  ,
-                    p.is_insp_ticket ,
-                    p.fee ,
-                    p.is_send_frep ,
-                    p.issuing_approv, 
-                ss.hold_insp, 
-                    ss.confirmed, 
-                    ss.procdate,
-                    ss.startdate, 
-                    ss.insp_type as subcont_or_person , 
-                    ss.is_boss, 
-                    ss.whysub, 
-                    ss.condation, 
-                    ss.implimint, 
-                    ss.timeing, 
-                    ss.cooperation, 
-                    ss.overall, 
-                    ss.perioddays, 
-                    ss.localprice, 
-                    ss.externelprice, 
-                    ss.remarks,
-                    ss.approved,
-                    ss.user_ins,
-                i.inspid, 
-                    i.insp_type, 
-                    i.first_name, 
-                    i.mid_name, 
-                    i.last_name, 
-                    i.passport, 
-                    i.idcard, 
-                    i.country   as insp_country, 
-                    i.depid     as insp_dep, 
-                    i.qualiid, 
-                    i.fld_exp, 
-                    i.insp_exp, 
-                    i.contid, 
-                    i.mobile    as insp_mobile, 
-                    i.email     as insp_email, 
-                    i.fax       as insp_fax, 
-                    i.phone     as insp_phone, 
-                    i.donor, 
-                    i.graddate, 
-                    i.crdate, 
-                    i.isactive as insp_is_active, 
-                    i.inspphoto, 
-                    i.loginname, 
-                    i.loginpassword, 
-                    i.issuing_certi 
-                from fdl.t_mproj m
-                left join fdl.t_proj p
-                on p.mprojid = m.mprjid
-                left join fdl.t_inspprocass ss
-                on ss.projid = p.projid
-                and p.isactive = 1
-                and ss.is_boss = 'Y'
-                left join fdl.t_insp i
-                on i.inspid = ss.inspid
-            );
- 
-
 
     --  [ triggers ]  
     create trigger fdl.set_is_boss_befor_ins before insert on fdl.t_inspprocass for each row 
@@ -925,6 +791,148 @@
 
             return txt ;
         end;
+    create function fdl.ref(p_ref varchar(15)) returns varchar(25)
+        begin
+            declare var varchar(5);
+            select id into var from fdl.t_company limit 1;
+            return concat(var,p_ref);
+        end;
+    --  [ CREATE VIEW ]  
+    create view v_login AS
+        SELECT  
+                priv_admin						, --  0
+                active    						, --  1  
+                name							, --  2  
+                email							, --  3 
+                userphoto		AS photo		, --  4 
+                issuing_certi					, --  5 
+                control_certi					, --  6 
+                "tech" 			AS speciality	, --  7   
+                null   			AS inspid  		,  --  8
+                login                           ,
+                pswd            
+        FROM    fdl.s_users 	
+        UNION
+        SELECT  "N"				AS priv_admin	, --  0													
+                isactive 		AS active 		, --  1
+                concat(first_name,' ',mid_name,' ',last_name) 		AS fullname		, --  2  
+                email							, --  3 
+                inspphoto 		AS photo		, --  4 
+                issuing_certi					, --  5 
+                "N"				AS control_certi, --  6 
+                "insp" 			AS speciality	, --  7 
+                inspid			  	  			, --  8
+                loginname       AS login        , -- 9
+                loginpassword   AS pswd	        	 						
+        FROM    fdl.t_insp ;
+
+    create view v_proj as
+            (
+                SELECT 
+                m.mprjid,
+                    m.custid ,
+                    m.code as mproj_code,
+                    m.depid,
+                    m.projname as mproj_name,
+                    m.lcreditno,
+                    m.subjpurchorderno,
+                    m.ms,
+                    m.totalaccred,
+                    m.qyagrosswt,
+                    m.qyanetwt,
+                p.steps,
+                    fdl.ref(concat(substring(i.first_name,1,1),substring(i.mid_name,1,1),substring(i.last_name,1,1),'/',p.projid)) as ref,
+                    p.approv_hold ,
+                    p.projid ,
+                    p.code as proj_cod ,
+                    p.projname ,
+                    p.shipmentno ,
+                    p.shipmentvalue ,
+                    p.currency ,
+                    p.supid ,
+                    p.commodity ,
+                    p.vesselsname ,
+                    p.cntryid ,
+                    p.town ,
+                    p.origin_goods ,
+                    p.place_insp ,
+                    p.insp_date ,
+                    p.portdispach ,
+                    p.portdischarge ,
+                    p.loadfromdate ,
+                    p.loadtodate ,
+                    p.qyagrosswt as p_qyagrosswt ,
+                    p.qyanetwt as p_qyanetwt, 
+                    p.totalaccred as p_totalaccred, 
+                    p.mprojid ,
+                    p.bill_loading_no ,
+                    p.bill_loading_date ,
+                    p.invoice_no ,
+                    p.invoice_date ,
+                    p.total_packing ,
+                    p.l_c_nr ,
+                    p.pro_inv_no ,
+                    p.pro_inv_date ,
+                    p.isactive as proj_is_active ,
+                    p.conclusion  ,
+                    p.is_insp_ticket ,
+                    p.fee ,
+                    p.is_send_frep ,
+                    p.issuing_approv, 
+                ss.hold_insp, 
+                    ss.confirmed, 
+                    ss.procdate,
+                    ss.startdate, 
+                    ss.insp_type as subcont_or_person , 
+                    ss.is_boss, 
+                    ss.whysub, 
+                    ss.condation, 
+                    ss.implimint, 
+                    ss.timeing, 
+                    ss.cooperation, 
+                    ss.overall, 
+                    ss.perioddays, 
+                    ss.localprice, 
+                    ss.externelprice, 
+                    ss.remarks,
+                    ss.approved,
+                    ss.user_ins,
+                i.inspid, 
+                    i.insp_type, 
+                    i.first_name, 
+                    i.mid_name, 
+                    i.last_name, 
+                    i.passport, 
+                    i.idcard, 
+                    i.country   as insp_country, 
+                    i.depid     as insp_dep, 
+                    i.qualiid, 
+                    i.fld_exp, 
+                    i.insp_exp, 
+                    i.contid, 
+                    i.mobile    as insp_mobile, 
+                    i.email     as insp_email, 
+                    i.fax       as insp_fax, 
+                    i.phone     as insp_phone, 
+                    i.donor, 
+                    i.graddate, 
+                    i.crdate, 
+                    i.isactive as insp_is_active, 
+                    i.inspphoto, 
+                    i.loginname, 
+                    i.loginpassword, 
+                    i.issuing_certi 
+                from fdl.t_mproj m
+                left join fdl.t_proj p
+                on p.mprojid = m.mprjid
+                left join fdl.t_inspprocass ss
+                on ss.projid = p.projid
+                and p.isactive = 1
+                and ss.is_boss = 'Y'
+                left join fdl.t_insp i
+                on i.inspid = ss.inspid
+            );
+ 
 
  
 
