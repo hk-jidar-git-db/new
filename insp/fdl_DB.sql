@@ -357,11 +357,11 @@
     create table fdl.t_arriavl
         (
             projid int not null primary key,
-            inspid int not null,
             arriv_date date,
             s_date date,
             time_on time,
-            foreign key (inspid) references fdl.t_insp(inspid) on update cascade,
+            note varchar(225),
+            email_to varchar(225),
             foreign key (projid) references fdl.t_proj(projid) on update  cascade
         );
     create table fdl.t_meeting
@@ -370,9 +370,10 @@
             sup_person varchar(70),
             sup_title varchar(70),
             sup_befalf varchar(50),
-            meet_time timestamp,
+            m_date date ,
+            m_time time ,
             place varchar(70),
-            items varchar(9) default '000000000',
+            items varchar(18),
             insp_dates varchar(225),
             foreign key (projid) references fdl.t_proj(projid) on update cascade   
         );
