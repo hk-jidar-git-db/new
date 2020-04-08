@@ -374,6 +374,7 @@
             m_time time ,
             place varchar(70),
             items varchar(18),
+            held_at varchar(60),
             insp_dates varchar(225),
             foreign key (projid) references fdl.t_proj(projid) on update cascade   
         );
