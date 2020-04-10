@@ -68,9 +68,13 @@
             from_email varchar(225), -- from E mail
             from_e_pwd varchar(225), -- from E mail
             stamp longblob, -- company stamp image
-            rep_arrival longblob -- arrival form 
+            rep_arrival longblob, -- arrival form 
+            rep_meeting longblob -- arrival form 
+            rep_declare longblob, -- arrival form 
+            rep_daily longblob -- Daily report
         );
 
+    
     INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
     -- [ help tables ]
     create table fdl.h_dep 
@@ -383,14 +387,17 @@
             projid int not null primary key,
             sup_person varchar(70),
             sup_title varchar(70),
+            person_email varchar(225),
             foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
-    create table fdl.t_daily_report
+    create table fdl.t_daily_rep
         (
             projid int not null,
             rep_date date,
+            hotel_tel varchar(15),
+            hotel_fax varchar(15),
+            room_no varchar(5),
             report longtext,
-            photo longblob,
             foreign key (projid) references fdl.t_proj(projid) on update cascade,
             primary key(rep_date,projid)
         );   
