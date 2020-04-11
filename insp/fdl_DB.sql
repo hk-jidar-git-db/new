@@ -71,7 +71,18 @@
             rep_arrival longblob, -- arrival form 
             rep_meeting longblob -- arrival form 
             rep_declare longblob, -- arrival form 
-            rep_daily longblob -- Daily report
+            rep_daily longblob, -- Daily report
+            rep_hold_insp longblob, -- Hold of inspection
+            rep_letter_perm longblob, -- letter of permission
+            rep_certi_fit longblob, -- certificit of fittnes
+            rep_ship_sur longblob, -- Shipping survet
+            rep_containers longblob, -- Containers inspection report
+            rep_final_rep longblob,  -- Final report
+            rep_fees longblob,   -- Fees\
+            rep_doc_trans longblob, --Assignment of documents
+            rep_samples longblob, -- Receipt of samples
+            rep_sampl_card -- Sampl card
+
         );
 
     
@@ -400,7 +411,19 @@
             report longtext,
             foreign key (projid) references fdl.t_proj(projid) on update cascade,
             primary key(rep_date,projid)
-        );   
+        ); 
+    create table fdl.t_hold_insp
+        (
+            projid int not null primary key,
+            h_date date,
+            place varchar(225) ,
+            reason_1 varchar(106),
+            reason_2 varchar(106),
+            reason_3 varchar(106),
+            reason_4 varchar(106),
+            sup_person varchar(100),
+            person_title varchar(100)
+        ) ; 
     create table fdl.t_letter_perm
         (
             projid int not null primary key,
