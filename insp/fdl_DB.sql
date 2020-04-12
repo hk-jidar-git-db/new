@@ -427,22 +427,62 @@
     create table fdl.t_letter_perm
         (
             projid int not null primary key,
-            date date,
-            msg longtext,
+            form_to varchar(100),
+            the_master varchar(100), -- Ship captin
+            port varchar(100),
+            form_date date,
             foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
-    create table fdl.t_ship_survey -- SHIPPING SURVEY
+       create table fdl.t_fitness
         (
             projid int not null primary key,
             rep longblob,
             foreign key (projid) references t_proj(projid)                                                                    
-        );
-    create table fdl.t_fitness
+        );    
+    create table fdl.t_certi_fitt -- Certification of fitness
         (
             projid int not null primary key,
-            rep longblob,
+            certi_no varchar(100),
+            form_date date ,
+            vessel varchar(100),
+            v_owner varchar(100),
+            call_sign varchar(100),
+            flag varchar(100),
+            loading_port varchar(100),
+            imo_no varchar(100),
+            is_fit varchar(1) default 'N',
             foreign key (projid) references t_proj(projid)                                                                    
         );
+    create table fdl.t_ship_survey
+    (
+        projid int not null primary key,
+        -- Ship specification
+        vessel_type varchar(23),
+        call_sign varchar(23),
+        loading_port varchar(23),
+        loading_rate varchar(23),
+        date_place_built varchar(22),
+        IMO varchar(22),
+        loading_date date,
+        discharge_rate varchar(22),
+        -- Shipment details
+        charter varchar(140),
+        loading_style varchar(140),
+        discharge_style varchar(140),
+        steve varchar(140),
+        limits varchar(140),
+        -- cargo information
+        cargo_type varchar(42),
+        measure varchar(42),
+        w_each varchar(42),
+        t_measur varchar(42),
+        t_w varchar(42),
+        p_remarks varchar(42),
+        s_limits varchar(42),
+        -- Documentation
+        lc varchar(77),
+        bl varchar(77)
+    );
     create table fdl.t_containers
         (
             projid int not null primary key,
