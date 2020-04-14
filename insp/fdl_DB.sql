@@ -69,7 +69,7 @@
             from_e_pwd varchar(225), -- from E mail
             stamp longblob, -- company stamp image
             rep_arrival longblob, -- arrival form 
-            rep_meeting longblob -- arrival form 
+            rep_meeting longblob, -- arrival form 
             rep_declare longblob, -- arrival form 
             rep_daily longblob, -- Daily report
             rep_hold_insp longblob, -- Hold of inspection
@@ -79,9 +79,9 @@
             rep_containers longblob, -- Containers inspection report
             rep_final_rep longblob,  -- Final report
             rep_fees longblob,   -- Fees\
-            rep_doc_trans longblob, --Assignment of documents
+            rep_doc_trans longblob, -- Assignment of documents
             rep_samples longblob, -- Receipt of samples
-            rep_sampl_card -- Sampl card
+            rep_sampl_card longblob -- Sampl card
 
         );
 
@@ -454,7 +454,7 @@
             foreign key (projid) references t_proj(projid)                                                                    
         );
     create table fdl.t_ship_survey
-    (
+      (
         projid int not null primary key,
         -- Ship specification
         vessel_type varchar(23),
@@ -485,15 +485,34 @@
         -- Documentation
         lc varchar(77),
         bl varchar(77)
-    );
+        );
     create table fdl.t_containers
         (
-            projid int not null primary key,
-            cont_no varchar(3),
-            seal_no varchar(3),
-            remarks varchar(225),  
-            foreign key (projid) references fdl.t_proj(projid)
+            projid int not null,
+            pages tinyint(1) not null ,
+            cont_no varchar(55),
+            cont_type varchar(26), -- 20ft / 40ft / Reefer cont. /Open to / etc
+            c_type_etc varchar(17),
+            cont_rej varchar(55),
+            reason varchar(136),
+            action_t varchar(64),
+            ok_cont varchar(12) default '000000000000',
+            not_cont varchar(12) default '000000000000',
+             primary key(projid,pages),
+            foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
+
+    create table fdl.t_cont_list
+        (
+            cont_no varchar(10) not null primary key,
+            projid  int not null,
+            pages tinyint(1) not null,
+            seal_no varchar(10),
+            remarks varchar(11),
+            foreign key ( projid,pages) references fdl.t_containers( projid,pages) on update cascade  
+        ) ;
+
+        
     create table fdl.t_final
         (
             projid int not null primary key,
@@ -579,23 +598,23 @@
     --   [ Secuirty Area ] --
     create table fdl.s_users 
         (
-            `login` VARCHAR(255) NOT NULL,
+            login VARCHAR(255) NOT NULL,
             pswd VARCHAR(255) NOT NULL,
-            `name` VARCHAR(64),
+            name VARCHAR(64),
             email VARCHAR(255),
             active VARCHAR(1),
             activation_code VARCHAR(32),
             priv_admin VARCHAR(1), 
 
-            PRIMARY KEY (`login`)
+            PRIMARY KEY (login)
         );
 
     create table fdl.s_logs
         (
-        `login` varchar(225) not null,
+        login varchar(225) not null,
         login_time timestamp not null default current_timestamp ,
         ip  varchar(20),
-        primary key(`login`,login_time) 
+        primary key(login,login_time) 
         );
     create table fdl.s_apps_sec
         (
@@ -606,7 +625,7 @@
         (
             app_name VARCHAR(128) NOT NULL,
             app_type VARCHAR(255),
-            `description` VARCHAR(255),
+            description VARCHAR(255),
             PRIMARY KEY (app_name)
         );
     create table fdl.s_apps_desc 
@@ -619,16 +638,16 @@
     create table fdl.s_groups 
         (
         group_id int(11) NOT NULL AUTO_INCREMENT,
-        `description` varchar(255) DEFAULT NULL,  
+        description varchar(255) DEFAULT NULL,  
         PRIMARY KEY (group_id) ,
         UNIQUE KEY description (description)
         );
     create table fdl.s_users_groups 
         (
-            `login` VARCHAR(255) NOT NULL,
+            login VARCHAR(255) NOT NULL,
             group_id int(11) NOT NULL,
             PRIMARY KEY (login, group_id),
-            foreign key (`login`) references s_users (`login`) on delete cascade,
+            foreign key (login) references s_users (login) on delete cascade,
             foreign key (group_id) references s_groups (group_id) on delete cascade
         );
     create table fdl.s_groups_apps 
@@ -656,10 +675,10 @@
         add arab_des varchar(225);
     create table fdl.s_users_dep 
         (
-            `login` VARCHAR(255) NOT NULL,
+            login VARCHAR(255) NOT NULL,
             depid varchar(2) NOT NULL,
             PRIMARY KEY (login, depid),
-            foreign key (`login`) references s_users (`login`) on delete cascade,
+            foreign key (login) references s_users (login) on delete cascade,
             foreign key (depid) references fdl.h_dep (depid) on delete cascade
         );
 
@@ -714,16 +733,16 @@
 
     create trigger fdl.set_uniquelogin_users before insert on fdl.s_users for each row begin
         declare c int;
-        select count(*) into c from fdl.t_insp where loginname = new.`login`;
+        select count(*) into c from fdl.t_insp where loginname = new.login;
         if (c > 0) then
             -- abort insert, because bar.username should be not null
-            set new.`login` = null;
+            set new.login = null;
         end if;
         end;
 
     create trigger fdl.unique_login_insp_tbl before insert on fdl.t_insp for each row begin
         declare c int;
-        select count(*) into c from fdl.s_users where `login` = new.loginname;
+        select count(*) into c from fdl.s_users where login = new.loginname;
         if (c > 0) then
             -- abort insert, because bar.username should be not null
             set new.loginname = null;
@@ -793,8 +812,12 @@
             update fdl.t_proj set steps = txt where projid = new.projid ;
 
         end;
-
-
+    create trigger fdl.set_cont_pages before insert on fdl.t_containers for each row
+        begin
+            declare x int;
+            select count(*) into x from fdl.t_containers where projid = new.projid ;
+            set new.pages = x + 1 ;
+        end;
     -- [ user defined function ] --
     create function fdl.track(p_id int) returns varchar(25)
         begin
