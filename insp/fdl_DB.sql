@@ -67,24 +67,14 @@
             insu varchar(225), --   insurance number 
             from_email varchar(225), -- from E mail
             from_e_pwd varchar(225), -- from E mail
-            stamp longblob, -- company stamp image
-            rep_arrival longblob, -- arrival form 
-            rep_meeting longblob, -- arrival form 
-            rep_declare longblob, -- arrival form 
-            rep_daily longblob, -- Daily report
-            rep_hold_insp longblob, -- Hold of inspection
-            rep_letter_perm longblob, -- letter of permission
-            rep_certi_fit longblob, -- certificit of fittnes
-            rep_ship_sur longblob, -- Shipping survet
-            rep_containers longblob, -- Containers inspection report
-            rep_final_rep longblob,  -- Final report
-            rep_fees longblob,   -- Fees\
-            rep_doc_trans longblob, -- Assignment of documents
-            rep_samples longblob, -- Receipt of samples
-            rep_sampl_card longblob -- Sampl card
-
+            stamp longblob -- company stamp image
         );
-
+    create table fdl.t_forms
+        (
+            id varchar(13) not null primary key,
+            f_name varchar(150),
+            form longblob
+        )
     
     INSERT  INTO fdl.t_company (id )VALUES( 'AIC');
     -- [ help tables ]
