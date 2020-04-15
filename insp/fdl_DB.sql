@@ -478,8 +478,7 @@
         );
     create table fdl.t_containers
         (
-            projid int not null,
-            pages tinyint(1) not null ,
+            projid int not null primary key,
             cont_no varchar(55),
             cont_type varchar(26), -- 20ft / 40ft / Reefer cont. /Open to / etc
             c_type_etc varchar(17),
@@ -488,20 +487,27 @@
             action_t varchar(64),
             ok_cont varchar(12) default '000000000000',
             not_cont varchar(12) default '000000000000',
-             primary key(projid,pages),
             foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
 
     create table fdl.t_cont_list
         (
-            cont_no varchar(10) not null primary key,
+            cont_no varchar(10) not null,
             projid  int not null,
-            pages tinyint(1) not null,
             seal_no varchar(10),
             remarks varchar(11),
-            foreign key ( projid,pages) references fdl.t_containers( projid,pages) on update cascade  
+            primary key(projid,cont_no),
+            foreign key ( projid) references fdl.t_containers( projid) on update cascade  
         ) ;
-
+    create table fdl.t_samples
+        (
+            sample_no varchar(15) not null primary key,
+            projid int not null,
+            qya tinyint(2),
+            condition varchar(12) defualt "000000000000"  , -- "temp,humidty,light"
+            place_sample varchar(14),
+            foreign key (projid) references fdl.t_proj(projid) on update cascade
+        );
         
     create table fdl.t_final
         (
@@ -528,12 +534,7 @@
             foreign key (projid) references fdl.t_proj(projid) on update cascade on delete cascade
         ); 
 
-    create table fdl.t_samples
-        (
-            projid int not null primary key,
-            rep longtext,
-            foreign key (projid) references fdl.t_proj(projid) on update cascade
-        );
+
     create table fdl.t_certi 
         (
         id                  int  ,
@@ -802,12 +803,7 @@
             update fdl.t_proj set steps = txt where projid = new.projid ;
 
         end;
-    create trigger fdl.set_cont_pages before insert on fdl.t_containers for each row
-        begin
-            declare x int;
-            select count(*) into x from fdl.t_containers where projid = new.projid ;
-            set new.pages = x + 1 ;
-        end;
+
     -- [ user defined function ] --
     create function fdl.track(p_id int) returns varchar(25)
         begin
