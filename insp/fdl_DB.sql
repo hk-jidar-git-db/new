@@ -497,14 +497,16 @@
             seal_no varchar(10),
             remarks varchar(11),
             primary key(projid,cont_no),
-            foreign key ( projid) references fdl.t_containers( projid) on update cascade  
+            foreign key (projid) references fdl.t_containers(projid) on update cascade  
         ) ;
     create table fdl.t_samples
         (
             sample_no varchar(15) not null primary key,
             projid int not null,
             qya tinyint(2),
-            condition varchar(12) defualt "000000000000"  , -- "temp,humidty,light"
+            cond_temp varchar(5),
+            cond_humd varchar(5),
+            cond_light varchar(5),
             place_sample varchar(14),
             foreign key (projid) references fdl.t_proj(projid) on update cascade
         );
@@ -882,7 +884,7 @@
             return concat(var,p_ref);
         end;
     --  [ CREATE VIEW ]  
-    create view v_login AS
+    create view fdl.v_login AS
         SELECT  
                 priv_admin						, --  0
                 active    						, --  1  
@@ -910,7 +912,7 @@
                 loginpassword   AS pswd	        	 						
         FROM    fdl.t_insp ;
 
-    create view v_proj as
+    create view fdl.v_proj as
             (
                 SELECT 
                 m.mprjid,
@@ -925,7 +927,16 @@
                     m.qyagrosswt,
                     m.qyanetwt,
                 p.steps,
-                    fdl.ref(concat(substring(i.first_name,1,1),substring(i.mid_name,1,1),substring(i.last_name,1,1),'/',p.projid)) as ref,
+                    fdl.ref(concat
+                                (
+                                    ":",
+                                    substring(i.first_name,1,1),
+                                    substring(i.mid_name,1,1),
+                                    substring(i.last_name,1,1),
+                                    i.depid,
+                                    substring(CONCAT('000',p.projid),-3)
+                                )
+                            ) as ref,
                     p.approv_hold ,
                     p.projid ,
                     p.code as proj_cod ,
@@ -1017,11 +1028,6 @@
                 on i.inspid = ss.inspid
             );
  
-
- 
-
-
-
     -- [ cust doc ] 
     create table fdl_dlrs.t_custdocs (
             id int auto_increment not null primary key,
